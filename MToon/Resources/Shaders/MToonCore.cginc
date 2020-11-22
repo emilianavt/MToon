@@ -36,6 +36,7 @@ sampler2D _UvAnimMaskTexture;
 float _UvAnimScrollX;
 float _UvAnimScrollY;
 float _UvAnimRotation;
+float _VRoidShade;
 
 //UNITY_INSTANCING_BUFFER_START(Props)
 //UNITY_INSTANCING_BUFFER_END(Props)
@@ -123,7 +124,7 @@ float4 frag_forward(v2f i) : SV_TARGET
     float2 mainUv = TRANSFORM_TEX(i.uv0, _MainTex);
     
     // uv anim
-    half uvAnim = tex2D(_UvAnimMaskTexture, mainUv).r * _Time.y;
+    float uvAnim = tex2D(_UvAnimMaskTexture, mainUv).r * _Time.y;
     // translate uv in bottom-left origin coordinates.
     mainUv += float2(_UvAnimScrollX, _UvAnimScrollY) * uvAnim;
     // rotate uv counter-clockwise around (0.5, 0.5) in bottom-left origin coordinates.
@@ -144,9 +145,6 @@ float4 frag_forward(v2f i) : SV_TARGET
 #endif
 #ifdef _ALPHABLEND_ON
     alpha = _Color.a * mainTex.a;
-#if !_ALPHATEST_ON && SHADER_API_D3D11 // Only enable this on D3D11, where I tested it
-    clip(alpha - 0.0001);              // Slightly improves rendering with layered transparency
-#endif
 #endif
     
     // normal
@@ -214,8 +212,9 @@ float4 frag_forward(v2f i) : SV_TARGET
     half3 indirectLighting = lerp(toonedGI, ShadeSH9(half4(worldNormal, 1)), _IndirectLightIntensity);
     indirectLighting = lerp(indirectLighting, max(EPS_COL, max(indirectLighting.x, max(indirectLighting.y, indirectLighting.z))), _LightColorAttenuation); // color atten
     col += indirectLighting * lit;
-    
-    col = min(col, lit); // comment out if you want to PBR absolutely.
+
+    half4 vroidChoice = _VRoidShade > 0.5 ? max(lit, shade) : lit;
+    col = min(col, vroidChoice); // comment out if you want to PBR absolutely.
 #endif
 
     // parametric rim lighting
