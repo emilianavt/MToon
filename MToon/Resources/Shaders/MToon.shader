@@ -34,7 +34,6 @@ Shader "VRM/MToon"
         _UvAnimScrollX ("UV Animation Scroll X", Float) = 0
         _UvAnimScrollY ("UV Animation Scroll Y", Float) = 0
         _UvAnimRotation ("UV Animation Rotation", Float) = 0
-        _VRoidShade ("VRoid style shade rendering", Float) = 0
 
         [HideInInspector] _MToonVersion ("_MToonVersion", Float) = 34
         [HideInInspector] _DebugMode ("_DebugMode", Float) = 0.0

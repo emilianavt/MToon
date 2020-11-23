@@ -36,7 +36,7 @@ sampler2D _UvAnimMaskTexture;
 float _UvAnimScrollX;
 float _UvAnimScrollY;
 float _UvAnimRotation;
-float _VRoidShade;
+uniform float _VRoidShade;
 
 //UNITY_INSTANCING_BUFFER_START(Props)
 //UNITY_INSTANCING_BUFFER_END(Props)
